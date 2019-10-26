@@ -1,0 +1,16 @@
+{:builds
+   {:app
+      {:asset-path "/js",
+       :devtools {:http-port 3000, :http-root "public"},
+       :modules {:main {:init-fn yarl.core/main}},
+       :output-dir "public/js",
+       :target :browser},
+    :test
+      {:ns-regexp "yarl.*-spec$",
+       :output-to "out/test.js",
+       :target :node-test}},
+ :nrepl {:port 3333},
+ :source-paths ["src"]
+ :dependencies
+ [[reagent "0.8.1"]
+  [cider/cider-nrepl "0.21.1"]]}
