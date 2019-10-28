@@ -56,9 +56,10 @@
 
 
 (defn render-map [display m]
-  (doseq [tile (flatten m)]
-    (let [[row col] (:pos tile)]
-      (.draw display col row (:glyph tile)))))
+  (doseq [row m
+          tile row]
+    (let [[r c] (:pos tile)]
+      (.draw display c r (:glyph tile)))))
 
 
 (defn render [display state]
@@ -67,6 +68,7 @@
 
 
 (defn init []
+  (set! (.. rot -Display -Rect -cache) true)
   (let [display (rot/Display. #js {"fontFamily" "Menlo"
                                    "width" (first WORLD-SIZE)
                                    "height" (second WORLD-SIZE)})
