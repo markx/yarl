@@ -1,17 +1,16 @@
 (ns yarl.core
   (:require
-    ["rot-js" :as rot]))
+    ["rot-js" :as rot]
+    [yarl.world :as world]))
 
 
 (defonce game (atom nil))
 
-(reset!
-  game
-  {:player
-    {:x 1
-     :y 1
-     :symbol "@"}})
+(def WORLD-SIZE [80 40])
 
+(comment
+  (reset! game (world/make-world WORLD-SIZE))
+  (swap! game update :world world/smooth-world))
 
 (defn move-player [state [dx dy]]
   (-> state
@@ -30,15 +29,15 @@
       :else state)))
 
 
-(defn update-state [state dt event]
-  (js/console.log (.-type event))
+(defn update-state [state event]
   (if event
     (handle-input state event)
     state))
 
 
 (defn update-game [event]
-  (prn "game state:" (swap! game update-state nil event)))
+  (let [old @game]
+    (compare-and-set! game old (update-state old event))))
 
 
 (defn addEventListener [event]
@@ -50,20 +49,30 @@
   (addEventListener "keyup")
   (addEventListener "keypress"))
 
-(defn render-player [display {:keys [x y symbol] :as player}]
+
+(defn render-player [display {:keys [x y glyph] :as player}]
   (doto display
-    (.draw x y symbol)))
+    (.draw x y glyph)))
+
+
+(defn render-map [display m]
+  (doseq [tile (flatten m)]
+    (let [[row col] (:pos tile)]
+      (.draw display col row (:glyph tile)))))
 
 
 (defn render [display state]
-  (.clear display)
+  (render-map display (:world state))
   (render-player display (:player state)))
 
 
 (defn init []
-  (let [display (rot/Display. #js {"fontFamily" "Menlo"})
+  (let [display (rot/Display. #js {"fontFamily" "Menlo"
+                                   "width" (first WORLD-SIZE)
+                                   "height" (second WORLD-SIZE)})
         el (.getContainer display)]
     (.. js/document -body (appendChild el))
+    (reset! game (world/make-world WORLD-SIZE))
     (letfn [(render-loop []
                 (render display @game)
                 (js/requestAnimationFrame render-loop))]
