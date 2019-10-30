@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "shadow-cljs watch app",
-    "build": "shadow-cljs release app"
+    "build": "npm run clean && shadow-cljs release app && cp -R public/ dist",
+    "clean": "rm -rf public/js/"
   },
   "devDependencies": {
     "shadow-cljs": "~2.8.66"
