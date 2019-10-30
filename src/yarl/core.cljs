@@ -21,11 +21,10 @@
 (defn handle-input [state event]
   (let [code (.-keyCode event)]
     (cond
-      (= (.-type event) "keyup") state ;; don't move
-      (= code (.-VK_UP rot/KEYS)) (move-player state [0 -1])
-      (= code (.-VK_DOWN rot/KEYS)) (move-player state [0 1])
-      (= code (.-VK_LEFT rot/KEYS)) (move-player state [-1 0])
-      (= code (.-VK_RIGHT rot/KEYS)) (move-player state [1 0])
+      (= code (.-VK_K rot/KEYS)) (move-player state [0 -1])
+      (= code (.-VK_J rot/KEYS)) (move-player state [0 1])
+      (= code (.-VK_H rot/KEYS)) (move-player state [-1 0])
+      (= code (.-VK_L rot/KEYS)) (move-player state [1 0])
       :else state)))
 
 
@@ -46,7 +45,6 @@
 
 (defn register-input-handler []
   (addEventListener "keydown")
-  (addEventListener "keyup")
   (addEventListener "keypress"))
 
 
