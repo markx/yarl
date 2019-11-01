@@ -1,7 +1,8 @@
 (ns yarl.core
   (:require
     ["rot-js" :as rot]
-    [yarl.world :as world]))
+    [yarl.world :as world]
+    [yarl.render :as render]))
 
 
 (defonce game (atom nil))
@@ -48,33 +49,20 @@
   (addEventListener "keypress"))
 
 
-(defn render-player [display {:keys [x y glyph] :as player}]
-  (doto display
-    (.draw x y glyph)))
-
-
-(defn render-map [display m]
-  (doseq [row m
-          tile row]
-    (let [[r c] (:pos tile)]
-      (.draw display c r (:glyph tile)))))
-
-
-(defn render [display state]
-  (render-map display (:world state))
-  (render-player display (:player state)))
+(defn init-renderer []
+  (rot/Display. #js {"fontFamily" "Menlo"
+                     "width" (first WORLD-SIZE)
+                     "height" (second WORLD-SIZE)}))
 
 
 (defn init []
   (set! (.. rot -Display -Rect -cache) true)
-  (let [display (rot/Display. #js {"fontFamily" "Menlo"
-                                   "width" (first WORLD-SIZE)
-                                   "height" (second WORLD-SIZE)})
+  (let [display (init-renderer)
         el (.getContainer display)]
     (.. js/document -body (appendChild el))
     (reset! game (world/make-world WORLD-SIZE))
     (letfn [(render-loop []
-                (render display @game)
+                (render/render display @game)
                 (js/requestAnimationFrame render-loop))]
       (render-loop))
     (register-input-handler)))
