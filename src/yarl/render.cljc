@@ -9,12 +9,12 @@
 (defn render-map [display m]
   (doseq [row m
           tile row]
-    (let [[r c] (:pos tile)]
-      (.draw display c r (:glyph tile)))))
+    (let [[x y] (:pos tile)]
+      (.draw display x y (:glyph tile)))))
 
 
 (defn render [display state]
-  (render-map display (:world state))
+  (render-map display (:map state))
   (render-player display (:player state)))
 
 

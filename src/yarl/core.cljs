@@ -7,11 +7,11 @@
 
 (defonce game (atom nil))
 
-(def WORLD-SIZE [80 40])
+(def WORLD-SIZE [80 50])
 
 (comment
-  (reset! game (world/make-world WORLD-SIZE))
-  (swap! game update :world world/smooth-world))
+  (reset! game (world/create WORLD-SIZE))
+  (swap! game update :map world/smooth-world))
 
 (defn move-player [state [dx dy]]
   (-> state
@@ -60,7 +60,7 @@
   (let [display (init-renderer)
         el (.getContainer display)]
     (.. js/document -body (appendChild el))
-    (reset! game (world/make-world WORLD-SIZE))
+    (reset! game (world/create WORLD-SIZE))
     (letfn [(render-loop []
                 (render/render display @game)
                 (js/requestAnimationFrame render-loop))]
