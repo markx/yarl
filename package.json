@@ -8,7 +8,7 @@
     "clean": "rm -rf public/js/"
   },
   "devDependencies": {
-    "shadow-cljs": "~2.8.66"
+    "shadow-cljs": "~2.8.93"
   },
   "dependencies": {
     "rot-js": "^2.1.1"
