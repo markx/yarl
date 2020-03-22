@@ -2,7 +2,8 @@
   (:require
     ["rot-js" :as rot]
     [yarl.world :as world]
-    [yarl.render :as render]))
+    [yarl.render :as render]
+    [yarl.fov :as fov]))
 
 
 (defonce game (atom nil))
@@ -29,10 +30,15 @@
       :else state)))
 
 
-(defn update-state [state event]
+(defn handle-event [state event]
   (if event
     (handle-input state event)
     state))
+
+(defn update-state [state event]
+  (-> state
+    (handle-event event)
+    (fov/update-fov)))
 
 
 (defn update-game [event]
@@ -60,7 +66,7 @@
   (let [display (init-renderer)
         el (.getContainer display)]
     (.. js/document -body (appendChild el))
-    (reset! game (world/create WORLD-SIZE))
+    (reset! game (fov/update-fov (world/create WORLD-SIZE)))
     (letfn [(render-loop []
                 (render/render display @game)
                 (js/requestAnimationFrame render-loop))]

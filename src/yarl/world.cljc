@@ -150,7 +150,8 @@
 (defn create-player [{:keys [x y]}]
   {:x x
    :y y
-   :glyph "@"})
+   :glyph "@"
+   :vision 8})
 
 
 (defn create [[width height]]

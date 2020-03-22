@@ -9,8 +9,10 @@
 (defn render-map [display m]
   (doseq [row m
           tile row]
-    (let [[x y] (:pos tile)]
-      (.draw display x y (:glyph tile)))))
+    (let [[x y] (:pos tile)
+          visible (:visible tile)
+          color (if visible "#ddd" "#555")]
+      (.draw display x y (:glyph tile) color))))
 
 
 (defn render [display state]
